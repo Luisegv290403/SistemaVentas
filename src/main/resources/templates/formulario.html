@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Usuario</title>
+</head>
+<body>
+
+    <h2>Formulario de Registro de Usuario</h2>
+
+    <form action="http://localhost:8085/Admin/adminAgrega" method="POST">
+        <label for="name">Nombre:</label>
+        <input type="text" id="name" name="name" required><br><br>
+
+        <label for="lastName">Apellido:</label>
+        <input type="text" id="lastName" name="lastName" required><br><br>
+
+        <label for="gmail">Correo Electrónico:</label>
+        <input type="email" id="gmail" name="gmail" required><br><br>
+
+        <label for="password_hash">Contraseña:</label>
+        <input type="password" id="password_hash" name="password_hash" required><br><br>
+
+        <label for="idRols">Roles (selecciona uno o más):</label>
+        <select id="idRols" name="idRols[]" multiple required>
+            <option value="1">Administrador</option>
+            <option value="2">User</option>
+        </select><br><br>
+
+        <label for="idApartments">Apartamentos (selecciona uno o más):</label>
+        <select id="idApartments" name="idApartments[]" multiple required>
+            <option value="1">Ventas</option>
+            <option value="2">Marketing</option>
+        </select><br><br>
+
+        <input type="submit" value="Crear Usuario">
+    </form>
+
+</body>
+</html>
