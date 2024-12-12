@@ -2,6 +2,8 @@ package com.sistemaventas.sistema.venta.entities.Apartment;
 
 import java.util.Set;
 
+
+import com.sistemaventas.sistema.venta.entities.ServicesAparament.ServicesAparment;
 import com.sistemaventas.sistema.venta.entities.User.User;
 
 import jakarta.persistence.Column;
@@ -11,6 +13,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -28,6 +31,10 @@ public class Apartment {
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "apartment")
     private Set<User> users;
+
+    @OneToMany(mappedBy = "apartment")
+    private Set<ServicesAparment> servicesAparments;
+
     
     public Apartment() {
     }
@@ -55,5 +62,7 @@ public class Apartment {
     public void setDescription(String description) {
         this.description = description;
     }
+
+
     
 }

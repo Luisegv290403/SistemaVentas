@@ -45,6 +45,7 @@ public class User {
         inverseJoinColumns = @JoinColumn(name = "id_rol", referencedColumnName = "id")
     )
     private Set<Rol> userRols;
+
     @ManyToMany
     @JoinTable(
         name="User_apartment",
@@ -53,17 +54,13 @@ public class User {
     )
     private Set<Apartment> apartment;
 
+
+
     public User() {
 
     }
     
-    /*public User(Long id_user, String name, Timestamp registration_date, String gmail, String password_hash) {
-        this.id_user = id_user;
-        this.name = name;
-        this.registration_date = registration_date;
-        this.gmail = gmail;
-        this.password_hash = password_hash;
-    }*/
+
     public User(String name, String lastName, Timestamp registration_date, String gmail, String password_hash) {
         this.name = name;
         this.lastName = lastName;
@@ -72,15 +69,6 @@ public class User {
         this.password_hash = password_hash;
     }
 
-    /*public User(String name, String lastName, String gmail, String password_hash,
-            Set<Long> idRols,  Set<Long> idApartments) {
-        this.name = name;
-        this.lastName = lastName;
-        this.gmail = gmail;
-        this.password_hash = password_hash;
-        this.idRols = idRols;
-        this.idApartments = idApartments;
-    }*/
 
     public Long getId_user() {
         return id_user;
@@ -137,6 +125,7 @@ public class User {
     public void setApartment(Set<Apartment> apartment) {
         this.apartment = apartment;
     }
+
 
 
       

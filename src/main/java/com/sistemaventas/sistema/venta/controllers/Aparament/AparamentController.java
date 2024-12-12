@@ -1,4 +1,4 @@
-package com.sistemaventas.sistema.venta.controllers.Admin;
+package com.sistemaventas.sistema.venta.controllers.Aparament;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
