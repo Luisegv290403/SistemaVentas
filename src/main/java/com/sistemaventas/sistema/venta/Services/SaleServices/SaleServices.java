@@ -2,6 +2,7 @@ package com.sistemaventas.sistema.venta.Services.SaleServices;
 
 
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -19,9 +20,11 @@ import com.sistemaventas.sistema.venta.DTO.SaleDto.SaleDto;
 import com.sistemaventas.sistema.venta.DTO.SaleDto.SaleResponseDto;
 import com.sistemaventas.sistema.venta.entities.Client.Client;
 import com.sistemaventas.sistema.venta.entities.Sale.Sale;
+import com.sistemaventas.sistema.venta.entities.ServicesAparament.ServicesAparment;
 import com.sistemaventas.sistema.venta.entities.User.UserAparament;
 import com.sistemaventas.sistema.venta.repositories.ClientRepository.ClienteRepository;
 import com.sistemaventas.sistema.venta.repositories.SaleRepository.SaleRepository;
+import com.sistemaventas.sistema.venta.repositories.ServicesAparament.ServicesAparmentRepository;
 import com.sistemaventas.sistema.venta.repositories.UserRepository.UserAparamentRepository;
 
 @Service
@@ -36,51 +39,53 @@ public class SaleServices {
     private ClienteRepository clienteRepository;
     @Autowired
     private DetSaleRepository detSaleRepository;
+    
+    @Autowired
+    private ServicesAparmentRepository servicesAparmentRepository;
+
+
     public ResponseEntity<?> addSale(SaleDto saleDto) {
         try {
-            // Buscar usuario-apartamento
-            UserAparament userApartment = userAparamentRepository
-                    .findById(saleDto.getUserApartments())
-                    .orElseThrow(() -> new IllegalArgumentException("UserApartment not found"));
-
-            // Procesar detalles de la venta
             List<DetSale> detSales = new ArrayList<>();
-            double total = 0.0;
-            for (DetSaleDto detSaleDto : saleDto.getDetSales()) {
-                if (detSaleDto.getServicesAparment() == null) {
-                    throw new IllegalArgumentException("ServiceApartment cannot be null");
-                }
 
-                double price = detSaleDto.getServicesAparment().getPrecie();
-                double subTotal = price * detSaleDto.getQuantity();
-                double subTotalIgv = subTotal + (subTotal * 0.18);
+            Client client = new Client(saleDto.getClient().getName(), saleDto.getClient().getDni(), saleDto.getClient().getCellphone(), saleDto.getClient().getAddress(), saleDto.getClient().getRuc(), saleDto.getClient().getEmail());
+            client = clienteRepository.save(client);
+
+            UserAparament userAparament = userAparamentRepository.findById(saleDto.getUserApartments()).orElseThrow(()-> new Exception("no hay un userAparment con ese id: " + saleDto.getUserApartments()));
+            double total = 0;
+
+            for(DetSaleDto detSaleDto : saleDto.getDetSales()){
+                ServicesAparment servicesAparment = servicesAparmentRepository.findById(detSaleDto.getServicesAparment()).orElseThrow(()-> new Exception("No hay servicesAparment con el id: " + detSaleDto.getServicesAparment()));
 
                 DetSale detSale = new DetSale();
-                detSale.setVenta(null); // Relación será establecida después
                 detSale.setQuantity(detSaleDto.getQuantity());
-                detSale.setServicesAparment(detSaleDto.getServicesAparment());
-                detSale.setUnitPrice(price);
-                detSale.setSubTotal(subTotal);
-                detSale.setSubTotalIgv(subTotalIgv);
+                detSale.setUnitPrice(servicesAparment.getPrecie());
+                detSale.setServicesAparment(servicesAparment);
+                detSale.setSubTotal(servicesAparment.getPrecie() * detSaleDto.getQuantity());
+                detSale.setSubTotalIgv(((servicesAparment.getPrecie() * detSaleDto.getQuantity()) * 0.18));
+
+                total += ((servicesAparment.getPrecie() * detSaleDto.getQuantity()) + ((servicesAparment.getPrecie() * detSaleDto.getQuantity()) * 0.18)); 
 
                 detSales.add(detSale);
-                total += subTotalIgv; // Acumular total con IGV
             }
 
-            // Crear y guardar la venta
-            Sale sale = new Sale(
-                    saleDto.getTypeComprobant(),
-                    saleDto.getDate(),
-                    generateNrComprobant(),
-                    saleDto.getClient(),
-                    userApartment,
-                    total,
-                    detSales
-            );
 
-            detSaleRepository.saveAll(detSales); // Guardar detalles en lote
+
+            Sale sale = new Sale();
+            sale.setNrComprobant(generateNrComprobant());
+            sale.setClient(client);
+            sale.setDate(saleDto.getDate());
+            sale.setTypeComprobant(saleDto.getTypeComprobant());
+            sale.setUserApartments(userAparament);
+            sale.setTotal(total);
+            
+
+            for(DetSale detSale : detSales){
+                detSale.setVenta(sale);
+            }
+            sale.setDetSales(detSales);
+            
             saleRepository.save(sale);
-
             return ResponseEntity.ok().body("Venta registrada correctamente");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error al registrar la venta: " + e.getMessage());
@@ -91,9 +96,4 @@ public class SaleServices {
         return "FAC-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
 
-        /*
-    public ResponseEntity<?> getSales(){
-        List<SaleResponseDto> saleDtos = saleRepository.findAll().stream().map(sale -> new SaleResponseDto(sale.getId(),sale.getTypeComprobant(), sale.getDate(), sale.getNrComprobant(), sale.getClient(), sale.getUserApartments().getId(), sale.getTotal())).collect(Collectors.toList());
-        return ResponseEntity.ok().body(saleDtos);
-    }*/
 }

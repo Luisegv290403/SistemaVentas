@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.sistemaventas.sistema.venta.DTO.DetSale.DetSaleDto;
 import com.sistemaventas.sistema.venta.entities.Client.Client;
-import com.sistemaventas.sistema.venta.entities.DetSale.DetSale;
+
 
 public class SaleDto {
 

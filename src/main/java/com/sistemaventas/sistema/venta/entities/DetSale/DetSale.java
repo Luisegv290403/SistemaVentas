@@ -26,12 +26,12 @@ public class DetSale {
     private Sale sale;
 
     @ManyToOne
-    @JoinColumn(name="services_apartment", nullable = false)
+    @JoinColumn(name = "services_apartment", referencedColumnName = "id") // Usa el nombre correcto de la columna en la base de datos
     private ServicesAparment servicesAparment;
 
     @Column(name = "quantity", nullable = false)
     private int quantity;
-    @Column(name="unit_precie", nullable = false)
+    @Column(name="unit_price", nullable = false)
     private double unitPrice;
 
 

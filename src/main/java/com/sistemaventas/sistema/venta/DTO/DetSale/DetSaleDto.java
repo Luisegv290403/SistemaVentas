@@ -1,14 +1,13 @@
 package com.sistemaventas.sistema.venta.DTO.DetSale;
 
 import com.sistemaventas.sistema.venta.entities.Sale.Sale;
-import com.sistemaventas.sistema.venta.entities.ServicesAparament.ServicesAparment;
 
 public class DetSaleDto {
      private Sale sale;
-     private ServicesAparment servicesAparment;
+     private Long servicesAparment;
      private int quantity;
 
-     public DetSaleDto(Sale sale, ServicesAparment servicesAparment, int quantity) {
+     public DetSaleDto(Sale sale, Long servicesAparment, int quantity) {
           this.sale = sale;
           this.servicesAparment = servicesAparment;
           this.quantity = quantity;
@@ -22,11 +21,11 @@ public class DetSaleDto {
           this.sale = sale;
      }
 
-     public ServicesAparment getServicesAparment() {
+     public Long getServicesAparment() {
           return servicesAparment;
      }
 
-     public void setServicesAparment(ServicesAparment servicesAparment) {
+     public void setServicesAparment(Long servicesAparment) {
           this.servicesAparment = servicesAparment;
      }
 
